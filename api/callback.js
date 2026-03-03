@@ -1,8 +1,10 @@
 export default async function handler(req, res) {
   const { code } = req.query;
 
+  const SITE_URL = 'https://raslpro.ru/tfssx';
+
   if (!code) {
-    return res.redirect('https://raslpro.ru/?error=no_code');
+    return res.redirect(`${SITE_URL}?error=no_code`);
   }
 
   const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
     const tokenData = await tokenResponse.json();
 
     if (!tokenData.access_token) {
-      return res.redirect('https://raslpro.ru/?error=token_failed');
+      return res.redirect(`${SITE_URL}?error=token_failed`);
     }
 
     // Получаем информацию о пользователе
@@ -46,7 +48,7 @@ export default async function handler(req, res) {
     );
 
     if (!memberResponse.ok) {
-      return res.redirect('https://raslpro.ru/?error=not_in_server');
+      return res.redirect(`${SITE_URL}?error=not_in_server`);
     }
 
     const memberData = await memberResponse.json();
@@ -58,7 +60,7 @@ export default async function handler(req, res) {
     );
 
     if (!hasRole) {
-      return res.redirect('https://raslpro.ru/?error=no_role');
+      return res.redirect(`${SITE_URL}?error=no_role`);
     }
 
     // Создаём простой токен сессии
@@ -72,10 +74,10 @@ export default async function handler(req, res) {
       })
     ).toString('base64');
 
-    // Редирект обратно на сайт с токеном
-    res.redirect(`https://raslpro.ru/?session=${sessionToken}`);
+    // Редирект обратно на страницу с кнопкой
+    res.redirect(`${SITE_URL}?session=${sessionToken}`);
   } catch (error) {
     console.error('Callback error:', error);
-    res.redirect('https://raslpro.ru/?error=server_error');
+    res.redirect(`${SITE_URL}?error=server_error`);
   }
 }
